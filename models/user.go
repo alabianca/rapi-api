@@ -76,7 +76,7 @@ func (u *User) Create() map[string]interface{} {
 	u.ID = insertResult.InsertedID.(primitive.ObjectID)
 
 	response := utils.Message(http.StatusCreated, "Successfully created user")
-	response["user"] = u
+	response["data"] = u
 
 	return response
 }
@@ -104,7 +104,7 @@ func Login(email, password string) map[string]interface{} {
 	// user is legit. send up a token
 
 	response := utils.Message(http.StatusFound, "Successfully got user")
-	response["user"] = user
+	response["data"] = user
 
 	return response
 }
@@ -128,7 +128,7 @@ func GetUserById(id primitive.ObjectID) map[string]interface{} {
 	user.Password = ""
 	response := utils.Message(http.StatusOK, "User Found")
 
-	response["user"] = user
+	response["data"] = user
 
 	return response
 }

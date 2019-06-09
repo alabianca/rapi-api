@@ -61,7 +61,7 @@ func GetToken(email, password string) map[string]interface{} {
 	tk.Expires = expires.UTC().String()
 
 	response := utils.Message(http.StatusOK, "Successfully got a token")
-	response["token"] = tk
+	response["data"] = tk
 
 	return response
 }

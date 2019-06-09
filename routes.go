@@ -4,13 +4,16 @@ import (
 	"github.com/alabianca/rapi-api/controllers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 )
 
 func apiRoutes() *chi.Mux {
 	router := chi.NewRouter()
+
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),
+		setupCORS().Handler,        // Allow Cross-Origin-Requests
 		middleware.Logger,          // Log API Requests
 		middleware.DefaultCompress, // Compress results
 		middleware.RedirectSlashes, // Redirect slashes to no slash url versions
@@ -23,6 +26,18 @@ func apiRoutes() *chi.Mux {
 	})
 
 	return router
+}
+
+func setupCORS() *cors.Cors {
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"POST", "GET", "UPDATE", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-TOKEN"},
+		AllowCredentials: true,
+		MaxAge:           500,
+	})
+
+	return c
 }
 
 func userRoutes() *chi.Mux {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/alabianca/rapi-api/app"
 	"github.com/alabianca/rapi-api/controllers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -13,8 +14,9 @@ func apiRoutes() *chi.Mux {
 
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),
-		setupCORS().Handler,        // Allow Cross-Origin-Requests
 		middleware.Logger,          // Log API Requests
+		app.JwtAuthentication,      // Check for presence of jwt token
+		setupCORS().Handler,        // Allow Cross-Origin-Requests
 		middleware.DefaultCompress, // Compress results
 		middleware.RedirectSlashes, // Redirect slashes to no slash url versions
 		middleware.Recoverer,       // recover from panic without crashing

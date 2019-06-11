@@ -22,8 +22,12 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		// list of endpoinst that don't require auth tokens
 		notAuth := []notAuth{
 			{
-				url:    "v1/api/user",
-				method: "post",
+				url:    "/v1/api/user",
+				method: "POST",
+			},
+			{
+				url:    "/v1/api/token",
+				method: "POST",
 			},
 		}
 		requestPath := r.URL.Path // current request path
@@ -32,7 +36,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		// check if request does not need auth, serve the request if it does
 
 		for _, value := range notAuth {
-			if value.url == requestPath && value.method == requestMethod {
+			if requestMethod == "OPTIONS" || (value.url == requestPath && value.method == requestMethod) {
 				next.ServeHTTP(w, r)
 				return
 			}

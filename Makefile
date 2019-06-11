@@ -1,10 +1,8 @@
 .PHONY:
-server deps:
+server: deps
 	go build -o bin/rapid
 
-
 deps:
-	echo Getting Deps
 	go get github.com/joho/godotenv
 	go get github.com/dgrijalva/jwt-go
 	go get github.com/go-chi/chi

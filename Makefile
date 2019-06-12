@@ -10,3 +10,4 @@ deps:
 	go get github.com/go-chi/chi/middleware
 	go get github.com/go-chi/render
 	go get go.mongodb.org/mongo-driver
+	go get github.com/atrox/haikunatorgo

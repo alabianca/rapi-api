@@ -18,6 +18,7 @@ type User struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Email    string             `json:"email"`
 	Password string             `json:"password"`
+	Records  []string           `json:"records"`
 }
 
 // Validate validates if a user by the u.Email already exists
@@ -131,4 +132,29 @@ func GetUserById(id primitive.ObjectID) map[string]interface{} {
 	response["data"] = user
 
 	return response
+}
+
+func AddRecord(userId primitive.ObjectID, url string) map[string]interface{} {
+	db, err := GetDB()
+
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, "Could not get a handle on the database")
+	}
+
+	users := db.Collection("users")
+
+	filter := bson.D{{"_id", userId}}
+	update := bson.D{
+		{"$push", bson.D{
+			{"records", url},
+		}},
+	}
+
+	_, err = users.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, fmt.Sprintf("Error Updating User %s", err))
+	}
+
+	return GetUserById(userId)
 }

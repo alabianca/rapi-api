@@ -25,6 +25,7 @@ func apiRoutes() *chi.Mux {
 	router.Route("/v1", func(r chi.Router) {
 		r.Mount("/api/user", userRoutes())
 		r.Mount("/api/token", tokenRoutes())
+		r.Mount("/api/resume", resumeRoutes())
 	})
 
 	return router
@@ -55,6 +56,14 @@ func tokenRoutes() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Post("/", controllers.CreateToken)
+
+	return router
+}
+
+func resumeRoutes() *chi.Mux {
+	router := chi.NewRouter()
+
+	router.Post("/", controllers.CreateResume)
 
 	return router
 }

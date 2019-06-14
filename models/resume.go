@@ -55,14 +55,17 @@ type Resume struct {
 }
 
 type URLRecord struct {
-	ID  primitive.ObjectID `json:"id",bson:"_id,omitempty"`
-	URL string             `json:"url"`
+	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	URL       string             `json:"url"`
+	CreatedAt time.Time          `json:"createdAt,omitempty"`
 }
 
 func (u *URLRecord) Create() map[string]interface{} {
 	if u.URL == "" {
 		return utils.Message(http.StatusBadRequest, "Illegal URL")
 	}
+
+	u.CreatedAt = time.Now().UTC()
 
 	db, err := GetDB()
 

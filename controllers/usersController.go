@@ -53,10 +53,32 @@ var GetUser = func(w http.ResponseWriter, r *http.Request) {
 	id, err := primitive.ObjectIDFromHex(userID)
 
 	if err != nil {
-		utils.Message(http.StatusNotFound, "Could Not Retrieve ID "+userID)
+		utils.Respond(w, utils.Message(http.StatusNotFound, "Could Not Retrieve ID "+userID))
+		return
 	}
 
 	resp := models.GetUserById(id)
+
+	utils.Respond(w, resp)
+}
+
+var PostUser = func(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userID")
+	id, err := primitive.ObjectIDFromHex(userID)
+
+	if err != nil {
+		utils.Respond(w, utils.Message(http.StatusNotFound, "Could Not Retrieve ID "+userID))
+		return
+	}
+
+	record := &models.URLRecord{}
+
+	if err := json.NewDecoder(r.Body).Decode(record); err != nil {
+		utils.Respond(w, utils.Message(http.StatusInternalServerError, "JSON Decode Error"))
+		return
+	}
+
+	resp := models.AddRecord(id, record.URL)
 
 	utils.Respond(w, resp)
 }

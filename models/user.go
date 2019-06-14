@@ -18,7 +18,7 @@ type User struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Email    string             `json:"email"`
 	Password string             `json:"password"`
-	Records  []string           `json:"records"`
+	Records  []string           `json:"records" bson:"records,omitempty"`
 }
 
 // Validate validates if a user by the u.Email already exists

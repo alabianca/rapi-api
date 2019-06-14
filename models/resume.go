@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/atrox/haikunatorgo"
+	haikunator "github.com/atrox/haikunatorgo"
 )
 
 type Personal struct {
@@ -58,6 +58,7 @@ type URLRecord struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	URL       string             `json:"url"`
 	CreatedAt time.Time          `json:"createdAt,omitempty"`
+	User      primitive.ObjectID `json:"userId" bson:"userId,omitempty"`
 }
 
 func (u *URLRecord) Create() map[string]interface{} {
@@ -89,7 +90,7 @@ func (u *URLRecord) Create() map[string]interface{} {
 	return response
 }
 
-func GenerateRandomURL() map[string]interface{} {
+func GenerateRandomURL(userId primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -97,7 +98,9 @@ func GenerateRandomURL() map[string]interface{} {
 	}
 
 	records := db.Collection("records")
-	record := &URLRecord{}
+	record := &URLRecord{
+		User: userId,
+	}
 
 	if err := generateAttempt(records, 0, 3, record); err != nil {
 		return utils.Message(http.StatusConflict, "Could Not Generate a URL")

@@ -15,10 +15,10 @@ import (
 )
 
 type User struct {
-	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Email    string             `json:"email"`
-	Password string             `json:"password"`
-	Records  []string           `json:"records" bson:"records,omitempty"`
+	ID       primitive.ObjectID   `json:"id" bson:"_id,omitempty"`
+	Email    string               `json:"email"`
+	Password string               `json:"password"`
+	Records  []primitive.ObjectID `json:"records" bson:"records,omitempty"`
 }
 
 // Validate validates if a user by the u.Email already exists
@@ -134,7 +134,7 @@ func GetUserById(id primitive.ObjectID) map[string]interface{} {
 	return response
 }
 
-func AddRecord(userId primitive.ObjectID, url string) map[string]interface{} {
+func AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -146,7 +146,7 @@ func AddRecord(userId primitive.ObjectID, url string) map[string]interface{} {
 	filter := bson.D{{"_id", userId}}
 	update := bson.D{
 		{"$push", bson.D{
-			{"records", url},
+			{"records", id},
 		}},
 	}
 

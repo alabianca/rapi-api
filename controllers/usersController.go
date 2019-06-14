@@ -78,7 +78,7 @@ var PostUser = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.AddRecord(id, record.URL)
+	resp := models.AddRecord(id, record.ID)
 
 	utils.Respond(w, resp)
 }

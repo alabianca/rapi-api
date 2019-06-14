@@ -82,3 +82,18 @@ var PostUser = func(w http.ResponseWriter, r *http.Request) {
 
 	utils.Respond(w, resp)
 }
+
+var GetRecordsForUser = func(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userID")
+	id, err := primitive.ObjectIDFromHex(userID)
+
+	if err != nil {
+		utils.Respond(w, utils.Message(http.StatusNotFound, "Could Not Retrieve ID "+userID))
+		return
+	}
+
+	resp := models.GetRecords(id)
+
+	utils.Respond(w, resp)
+
+}

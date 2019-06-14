@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -157,4 +158,43 @@ func AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]inte
 	}
 
 	return GetUserById(userId)
+}
+
+func GetRecords(userId primitive.ObjectID) map[string]interface{} {
+	db, err := GetDB()
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, "Could not get a handle on the database")
+	}
+
+	var results []*URLRecord
+	records := db.Collection("records")
+
+	filter := bson.D{{"userId", userId}}
+
+	cur, err := records.Find(context.TODO(), filter)
+	if err != nil {
+		return utils.Message(http.StatusNotFound, fmt.Sprintf("No Records found for User %s", userId.Hex()))
+	}
+
+	defer cur.Close(context.TODO())
+
+	for cur.Next(context.TODO()) {
+		var record URLRecord
+
+		if cur.Decode(&record) != nil {
+			return utils.Message(http.StatusInternalServerError, fmt.Sprintf("Could Not Decode Record. Cursor Error"))
+		}
+		log.Printf("Appending Record %s", record.URL)
+		results = append(results, &record)
+	}
+
+	if len(results) == 0 {
+		return utils.Message(http.StatusNotFound, fmt.Sprintf("No Records Found for %s", userId.Hex()))
+	}
+
+	resp := utils.Message(http.StatusOK, "Records found")
+	resp["data"] = results
+
+	return resp
+
 }

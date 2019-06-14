@@ -49,6 +49,7 @@ func userRoutes() *chi.Mux {
 	router.Post("/", controllers.CreateUser)
 	router.Post("/{userID}", controllers.PostUser)
 	router.Get("/{userID}", controllers.GetUser)
+	router.Get("/{userID}/records", controllers.GetRecordsForUser)
 
 	return router
 }
@@ -65,6 +66,12 @@ func resumeRoutes() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Post("/", controllers.CreateResume)
+
+	return router
+}
+
+func recordRoutes() *chi.Mux {
+	router := chi.NewRouter()
 
 	return router
 }

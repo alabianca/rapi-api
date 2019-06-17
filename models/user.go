@@ -16,10 +16,12 @@ import (
 )
 
 type User struct {
-	ID       primitive.ObjectID   `json:"id" bson:"_id,omitempty"`
-	Email    string               `json:"email"`
-	Password string               `json:"password"`
-	Records  []primitive.ObjectID `json:"records" bson:"records,omitempty"`
+	FirstName string               `json:"firstName"`
+	LastName  string               `json:"lastName"`
+	ID        primitive.ObjectID   `json:"id" bson:"_id,omitempty"`
+	Email     string               `json:"email"`
+	Password  string               `json:"password"`
+	Records   []primitive.ObjectID `json:"records" bson:"records,omitempty"`
 }
 
 // Validate validates if a user by the u.Email already exists

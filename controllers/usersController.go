@@ -29,6 +29,8 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 
 	user.Email = reg.Email
 	user.Password = reg.Password
+	user.FirstName = reg.FirstName
+	user.LastName = reg.LastName
 
 	resp := user.Create()
 

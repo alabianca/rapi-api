@@ -46,7 +46,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		tokenHeader := r.Header.Get("Authorization")
 
 		if tokenHeader == "" {
-			response = utils.Message(http.StatusForbidden, "Missing auth token")
+			response = utils.Message(http.StatusUnauthorized, "Missing auth token")
 			utils.Respond(w, response)
 			return
 		}
@@ -54,7 +54,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		split := strings.Split(tokenHeader, " ") // The token normaly comes in format `Bearer {token}`
 
 		if len(split) != 2 {
-			response = utils.Message(http.StatusForbidden, "Invalid/Malformed auth token")
+			response = utils.Message(http.StatusUnauthorized, "Invalid/Malformed auth token")
 			utils.Respond(w, response)
 			return
 		}
@@ -68,13 +68,13 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		if err != nil {
 			msg := validationErrorMessage(err)
-			response = utils.Message(http.StatusForbidden, msg)
+			response = utils.Message(http.StatusUnauthorized, msg)
 			utils.Respond(w, response)
 			return
 		}
 
 		if !token.Valid {
-			response = utils.Message(http.StatusForbidden, "Invalid Token")
+			response = utils.Message(http.StatusUnauthorized, "Invalid Token")
 			utils.Respond(w, response)
 			return
 		}

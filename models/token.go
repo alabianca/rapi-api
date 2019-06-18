@@ -43,7 +43,7 @@ func GetToken(email, password string) map[string]interface{} {
 
 	// verify the password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return utils.Message(http.StatusForbidden, "Authentication Error")
+		return utils.Message(http.StatusUnauthorized, "Authentication Error")
 	}
 
 	// user is legit. send up a token
@@ -56,7 +56,7 @@ func GetToken(email, password string) map[string]interface{} {
 	tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
 
 	if err != nil {
-		return utils.Message(http.StatusForbidden, "Token Error "+err.Error())
+		return utils.Message(http.StatusUnauthorized, "Token Error "+err.Error())
 	}
 
 	tk.TokenString = tokenString

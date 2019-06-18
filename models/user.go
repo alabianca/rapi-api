@@ -102,7 +102,7 @@ func Login(email, password string) map[string]interface{} {
 
 	// verify the password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return utils.Message(http.StatusForbidden, "Authentication Error")
+		return utils.Message(http.StatusUnauthorized, "Authentication Error")
 	}
 
 	// user is legit. send up a token

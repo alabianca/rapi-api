@@ -71,7 +71,8 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		})
 
 		if err != nil {
-			response = utils.Message(http.StatusForbidden, "Malformed auth token")
+			msg := validationErrorMessage(err)
+			response = utils.Message(http.StatusForbidden, msg)
 			// w.WriteHeader(http.StatusForbidden)
 			// w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
@@ -95,4 +96,18 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r) // proceed the middleware chain
 
 	})
+}
+
+func validationErrorMessage(err error) string {
+	valErr := err.(jwt.ValidationError)
+
+	var msg string
+	switch valErr.Errors {
+	case jwt.ValidationErrorExpired:
+		msg = "Token is expired"
+	default:
+		msg = "Token is malformed"
+	}
+
+	return msg
 }

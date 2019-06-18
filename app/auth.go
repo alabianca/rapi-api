@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -47,8 +47,6 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		if tokenHeader == "" {
 			response = utils.Message(http.StatusForbidden, "Missing auth token")
-			// w.WriteHeader(http.StatusForbidden)
-			// w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
 			return
 		}
@@ -57,8 +55,6 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		if len(split) != 2 {
 			response = utils.Message(http.StatusForbidden, "Invalid/Malformed auth token")
-			// w.WriteHeader(http.StatusForbidden)
-			// w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
 			return
 		}
@@ -73,23 +69,19 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		if err != nil {
 			msg := validationErrorMessage(err)
 			response = utils.Message(http.StatusForbidden, msg)
-			// w.WriteHeader(http.StatusForbidden)
-			// w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
 			return
 		}
 
 		if !token.Valid {
 			response = utils.Message(http.StatusForbidden, "Invalid Token")
-			// w.WriteHeader(http.StatusForbidden)
-			// w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
 			return
 		}
 
 		// Everything went well, proceed with the request and set the caller
 		// to the user retrieved from teh parsed token
-		fmt.Sprintf("User %s", tk.UserID)
+		log.Printf("User %s", tk.UserID)
 		ctx := context.WithValue(r.Context(), "user", tk.UserID)
 		r = r.WithContext(ctx)
 
@@ -99,7 +91,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 }
 
 func validationErrorMessage(err error) string {
-	valErr := err.(jwt.ValidationError)
+	valErr := err.(*jwt.ValidationError)
 
 	var msg string
 	switch valErr.Errors {

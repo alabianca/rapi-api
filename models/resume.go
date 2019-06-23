@@ -17,6 +17,8 @@ import (
 	haikunator "github.com/atrox/haikunatorgo"
 )
 
+const ResumeCollection = "resume"
+
 type Personal struct {
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
@@ -62,7 +64,7 @@ func (r *Resume) CreateResume() map[string]interface{} {
 		return utils.Message(http.StatusInternalServerError, "Could Not Connect to DB")
 	}
 
-	resume := db.Collection("resume")
+	resume := db.Collection(ResumeCollection)
 
 	insertResult, err := resume.InsertOne(context.TODO(), r)
 	if err != nil {
@@ -101,7 +103,7 @@ func getResume(userId primitive.ObjectID) ([]*Resume, error) {
 		return nil, err
 	}
 
-	resume := db.Collection("resume")
+	resume := db.Collection(ResumeCollection)
 	result := make([]*Resume, 0)
 	filter := bson.D{{"userid", userId}}
 

@@ -33,7 +33,7 @@ func GetToken(email, password string) map[string]interface{} {
 
 	user := &User{}
 	filter := bson.D{{"email", email}}
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 	expiresInSeconds, _ := strconv.ParseInt(os.Getenv("token_expiry"), 10, 64)
 	log.Printf("Token expires in %d seconds\n", expiresInSeconds)
 	expires := time.Now().Add(time.Duration(int64(time.Second) * expiresInSeconds))

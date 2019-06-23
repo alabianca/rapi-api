@@ -15,6 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const UserCollection = "users"
+
 type User struct {
 	FirstName string               `json:"firstName"`
 	LastName  string               `json:"lastName"`
@@ -42,7 +44,7 @@ func (u *User) Validate() (map[string]interface{}, bool) {
 		return utils.Message(http.StatusInternalServerError, "Could not connect to database"), false
 	}
 
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 
 	if err := users.FindOne(context.TODO(), filter).Decode(u); err != mongo.ErrNoDocuments {
 
@@ -68,7 +70,7 @@ func (u *User) Create() map[string]interface{} {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on database")
 	}
 
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 
 	insertResult, err := users.InsertOne(context.TODO(), u)
 
@@ -94,7 +96,7 @@ func Login(email, password string) map[string]interface{} {
 
 	user := &User{}
 	filter := bson.D{{"email", email}}
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 
 	if err := users.FindOne(context.TODO(), filter).Decode(user); err == mongo.ErrNoDocuments {
 		return utils.Message(http.StatusNotFound, fmt.Sprintf("User %s not found", email))
@@ -121,7 +123,7 @@ func GetUserById(id primitive.ObjectID) map[string]interface{} {
 	}
 
 	user := &User{}
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 	filter := bson.D{{"_id", id}}
 
 	if err := users.FindOne(context.TODO(), filter).Decode(user); err == mongo.ErrNoDocuments {
@@ -144,7 +146,7 @@ func AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]inte
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on the database")
 	}
 
-	users := db.Collection("users")
+	users := db.Collection(UserCollection)
 
 	filter := bson.D{{"_id", userId}}
 	update := bson.D{

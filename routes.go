@@ -14,9 +14,10 @@ func apiRoutes() *chi.Mux {
 
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),
-		setupCORS().Handler,        // Allow Cross-Origin-Requests
-		middleware.Logger,          // Log API Requests
-		app.JwtAuthentication,      // Check for presence of jwt token
+		setupCORS().Handler,   // Allow Cross-Origin-Requests
+		middleware.Logger,     // Log API Requests
+		app.JwtAuthentication, // Check for presence of jwt token
+		app.CheckKey,
 		middleware.DefaultCompress, // Compress results
 		middleware.RedirectSlashes, // Redirect slashes to no slash url versions
 		middleware.Recoverer,       // recover from panic without crashing
@@ -26,6 +27,10 @@ func apiRoutes() *chi.Mux {
 		r.Mount("/api/user", userRoutes())
 		r.Mount("/api/token", tokenRoutes())
 		r.Mount("/api/resume", resumeRoutes())
+	})
+
+	router.Route("/v1", func(r chi.Router) {
+		r.Mount("/record", recordRoutes())
 	})
 
 	return router

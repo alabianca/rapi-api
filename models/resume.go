@@ -47,11 +47,99 @@ type Project struct {
 }
 
 type Resume struct {
-	Personal    Personal
-	Education   Education
-	Experiences []Experience
-	Projects    []Project
-	Skills      []string
+	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	UserID      primitive.ObjectID `json:"userId"`
+	Personal    Personal           `json:"personal"`
+	Education   Education          `json:"education"`
+	Experiences []Experience       `json:"experience"`
+	Projects    []Project          `json:"projects"`
+	Skills      []string           `json:"skills"`
+}
+
+func (r *Resume) CreateResume() map[string]interface{} {
+	db, err := GetDB()
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, "Could Not Connect to DB")
+	}
+
+	resume := db.Collection("resume")
+
+	insertResult, err := resume.InsertOne(context.TODO(), r)
+	if err != nil {
+		return utils.Message(http.StatusNotModified, "Did not insert resume")
+	}
+
+	r.ID = insertResult.InsertedID.(primitive.ObjectID)
+
+	response := utils.Message(http.StatusCreated, "Resume inserted")
+	response["data"] = r
+
+	return response
+}
+
+func GetResumes(userId primitive.ObjectID) map[string]interface{} {
+	resumes, err := getResume(userId)
+
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, err.Error())
+	}
+
+	if len(resumes) <= 0 {
+		return utils.Message(http.StatusNotFound, "No Resumes Found for "+userId.Hex())
+	}
+
+	response := utils.Message(http.StatusOK, "Resume found")
+	response["data"] = resumes
+
+	return response
+
+}
+
+func getResume(userId primitive.ObjectID) ([]*Resume, error) {
+	db, err := GetDB()
+	if err != nil {
+		return nil, err
+	}
+
+	resume := db.Collection("resume")
+	result := make([]*Resume, 0)
+	filter := bson.D{{"userid", userId}}
+
+	cursor, err := resume.Find(context.TODO(), filter)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error: %s", err.Error())
+	}
+
+	defer cursor.Close(context.TODO())
+
+	for cursor.Next(context.TODO()) {
+		var res Resume
+
+		if err := cursor.Decode(&res); err != nil {
+			return nil, fmt.Errorf("Error: %s", err.Error())
+		}
+
+		result = append(result, &res)
+	}
+
+	return result, nil
+
+}
+
+func GetSkills(userId primitive.ObjectID) map[string]interface{} {
+	// resume, err := getResume(userId)
+
+	// if err != nil {
+	// 	return utils.Message(http.StatusInternalServerError, err.Error())
+	// }
+
+	// res := utils.Message(http.StatusOK, "Education Found")
+	// res["data"] = resume.Skills
+
+	// return res
+	return nil
+
 }
 
 type URLRecord struct {

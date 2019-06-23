@@ -66,6 +66,7 @@ func resumeRoutes() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Post("/", controllers.CreateResume)
+	router.Get("/", controllers.GetResumes)
 
 	return router
 }

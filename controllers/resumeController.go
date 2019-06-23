@@ -20,13 +20,29 @@ var CreateResume = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId, err := primitive.ObjectIDFromHex(user)
-
 	if err != nil {
-		utils.Respond(w, utils.Message(http.StatusUnauthorized, "Not Authorized"))
+		utils.Respond(w, utils.Message(http.StatusUnauthorized, "UserID is required"))
 		return
 	}
 
-	response := models.GenerateRandomURL(userId)
+	resume.UserID = userId
+
+	response := resume.CreateResume()
 
 	utils.Respond(w, response)
+}
+
+var GetResumes = func(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(string)
+
+	userId, err := primitive.ObjectIDFromHex(user)
+	if err != nil {
+		utils.Respond(w, utils.Message(http.StatusUnauthorized, "UserID is required"))
+		return
+	}
+
+	res := models.GetResumes(userId)
+
+	utils.Respond(w, res)
+
 }

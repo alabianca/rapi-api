@@ -57,10 +57,6 @@ func GetResumes(userId primitive.ObjectID) map[string]interface{} {
 		return utils.Message(http.StatusInternalServerError, err.Error())
 	}
 
-	if len(resumes) <= 0 {
-		return utils.Message(http.StatusNotFound, "No Resumes Found for "+userId.Hex())
-	}
-
 	response := utils.Message(http.StatusOK, "Resume found")
 	response["data"] = resumes
 

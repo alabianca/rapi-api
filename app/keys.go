@@ -34,6 +34,7 @@ var CheckKey = func(next http.Handler) http.Handler {
 		}
 
 		record := chi.URLParam(r, "resumeID")
+
 		if record == "" {
 			utils.Respond(w, utils.Message(http.StatusUnauthorized, "Resume ID is required"))
 			return
@@ -41,7 +42,7 @@ var CheckKey = func(next http.Handler) http.Handler {
 
 		resumeID, err := primitive.ObjectIDFromHex(record)
 		if err != nil {
-			utils.Respond(w, utils.Message(http.StatusUnauthorized, "Resume ID is required"))
+			utils.Respond(w, utils.Message(http.StatusUnauthorized, "Resume ID is required "+err.Error()))
 		}
 
 		db, err := models.GetDB()
@@ -67,7 +68,7 @@ var CheckKey = func(next http.Handler) http.Handler {
 		log.Printf("Resume %s\n", resumeID.Hex())
 		log.Printf("API Key %s\n", apiKey.Key)
 
-		ctx := context.WithValue(r.Context(), "resume", resumeID.Hex())
+		ctx := context.WithValue(r.Context(), "resume", resumeID)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)

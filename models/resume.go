@@ -129,20 +129,37 @@ func getResume(userId primitive.ObjectID) ([]*Resume, error) {
 
 }
 
-func GetSkills(userId primitive.ObjectID) map[string]interface{} {
-	// resume, err := getResume(userId)
+func GetResumeByID(id primitive.ObjectID) map[string]interface{} {
+	res, err := getResumeById(id)
 
-	// if err != nil {
-	// 	return utils.Message(http.StatusInternalServerError, err.Error())
-	// }
+	if err != nil {
+		return utils.Message(http.StatusNotFound, err.Error())
+	}
 
-	// res := utils.Message(http.StatusOK, "Education Found")
-	// res["data"] = resume.Skills
+	response := utils.Message(http.StatusOK, "Resume Found")
+	response["data"] = res
 
-	// return res
-	return nil
-
+	return response
 }
+
+func getResumeById(id primitive.ObjectID) (*Resume, error) {
+	db, err := GetDB()
+	if err != nil {
+		return nil, err
+	}
+
+	resume := db.Collection("resume")
+	var result Resume
+	filter := bson.D{{"_id", id}}
+
+	if err := resume.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+/************************************************* URL RECORD **********************************************************/
 
 type URLRecord struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`

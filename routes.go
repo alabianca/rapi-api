@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alabianca/rapi-api/app"
 	"github.com/alabianca/rapi-api/controllers"
+	"github.com/alabianca/rapi-api/pub"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -14,16 +15,15 @@ func apiRoutes() *chi.Mux {
 
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),
-		setupCORS().Handler,   // Allow Cross-Origin-Requests
-		middleware.Logger,     // Log API Requests
-		app.JwtAuthentication, // Check for presence of jwt token
-		app.CheckKey,
+		setupCORS().Handler,        // Allow Cross-Origin-Requests
+		middleware.Logger,          // Log API Requests
 		middleware.DefaultCompress, // Compress results
 		middleware.RedirectSlashes, // Redirect slashes to no slash url versions
 		middleware.Recoverer,       // recover from panic without crashing
 	)
 
 	router.Route("/v1", func(r chi.Router) {
+		r.Use(app.JwtAuthentication)
 		r.Mount("/api/user", userRoutes())
 		r.Mount("/api/token", tokenRoutes())
 		r.Mount("/api/resume", resumeRoutes())
@@ -88,6 +88,8 @@ func keyRoutes() *chi.Mux {
 
 func recordRoutes() *chi.Mux {
 	router := chi.NewRouter()
+
+	router.With(app.CheckKey).Get("/{resumeID}", pub.GetResume)
 
 	return router
 }

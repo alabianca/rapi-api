@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -15,7 +14,7 @@ import (
 
 var CreateKey = func(w http.ResponseWriter, r *http.Request) {
 	var key models.APIKey
-	log.Println("in here")
+
 	if err := json.NewDecoder(r.Body).Decode(&key); err != nil {
 		utils.Respond(w, utils.Message(http.StatusInternalServerError, err.Error()))
 		return

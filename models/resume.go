@@ -19,35 +19,6 @@ import (
 
 const ResumeCollection = "resume"
 
-type Personal struct {
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Objective string `json:"objective"`
-}
-
-type Education struct {
-	School    string    `json:"school"`
-	Degree    string    `json:"degree"`
-	GPA       float32   `json:"gpa"`
-	StartDate time.Time `json:"fromDate"`
-	EndDate   time.Time `json:"toDate"`
-}
-
-type Experience struct {
-	Company         string    `json:"company"`
-	Title           string    `json:"title"`
-	StartDate       time.Time `json:"startDate"`
-	EndDate         time.Time `json:"endDate"`
-	CurrentJob      bool      `json:"current"`
-	Accomplishments []string  `json:"accomplishments"`
-}
-
-type Project struct {
-	Title  string `json:"title"`
-	Detail string `json:"detail"`
-	Link   string `json:"link"`
-}
-
 type Resume struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	UserID      primitive.ObjectID `json:"userId"`

@@ -89,7 +89,15 @@ func keyRoutes() *chi.Mux {
 func recordRoutes() *chi.Mux {
 	router := chi.NewRouter()
 
-	router.With(app.CheckKey).Get("/{resumeID}", pub.GetResume)
+	r := router.With(app.CheckKey)
+	r.Get("/{resumeID}", pub.GetResume)
+	r.Get("/{resumeID}/experience", pub.GetExperience)
+	r.Get("/{resumeID}/education", pub.GetEducation)
+	r.Get("/{resumeID}/personal", pub.GetPersonal)
+	r.Get("/{resumeID}/projects", pub.GetProjects)
+	r.Get("/{resumeID}/skills", pub.GetSkills)
+
+	r.Post("/{resumeID}", pub.GetResume)
 
 	return router
 }

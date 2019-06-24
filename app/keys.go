@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -16,10 +17,17 @@ import (
 	"github.com/alabianca/rapi-api/utils"
 )
 
+var ScopeMapping = map[string]string{
+	"POST": "create",
+	"GET":  "read",
+}
+
 var CheckKey = func(next http.Handler) http.Handler {
 	needsKey := "/pub/v1/record"
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestPath := r.URL.Path
+		method := r.Method
 
 		if !strings.Contains(requestPath, needsKey) {
 			next.ServeHTTP(w, r)
@@ -65,6 +73,12 @@ var CheckKey = func(next http.Handler) http.Handler {
 			return
 		}
 
+		// check if the api key has the required scope for the request
+		if !scopeMapping(method, apiKey.Scope) {
+			utils.Respond(w, utils.Message(http.StatusUnauthorized, fmt.Sprintf("This API Key is not authorized to execute %s requests", method)))
+			return
+		}
+
 		log.Printf("Resume %s\n", resumeID.Hex())
 		log.Printf("API Key %s\n", apiKey.Key)
 
@@ -73,4 +87,16 @@ var CheckKey = func(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func scopeMapping(method string, scope []string) bool {
+	requiredScope := ScopeMapping[method]
+
+	for _, s := range scope {
+		if s == requiredScope {
+			return true
+		}
+	}
+
+	return false
 }

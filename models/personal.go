@@ -3,7 +3,7 @@ package models
 import (
 	"net/http"
 
-	"github.com/alabianca/rapiod/utils"
+	"github.com/alabianca/rapi-api/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

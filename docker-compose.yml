@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
+    #   db_host: mongo
+
+  rapi:
+    build: .
+    environment:
+      - db_name=rapi
+      - db_pass=coffeebay
+      - db_user=alex
+      - db_type=mongodb
+      - db_host=mongo
+      - db_port=27017
+      - PORT=8000
+      - HOST=localhost
+      - token_password=coffeebay77z
+      - token_expiry=86400
+      
+    ports: 
+      - "8080:8000"

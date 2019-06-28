@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -20,11 +21,11 @@ func main() {
 	}
 
 	address := fmt.Sprintf("%s:%s", host, port)
-	fmt.Printf("Server Listening @ %s\n", address)
+	log.Printf("Server Listening @ %s\n", address)
 
 	err := http.ListenAndServe(address, router)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }

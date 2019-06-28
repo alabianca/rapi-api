@@ -23,6 +23,9 @@ func init() {
 	host := os.Getenv("db_host")
 	port := os.Getenv("db_port")
 
+	log.Printf("DB Host @ <%s>\n", host)
+	log.Printf("DB Port @ <%s>\n", port)
+
 	dbURI := fmt.Sprintf("mongodb://%s:%s", host, port)
 
 	clientOptions := options.Client().ApplyURI(dbURI)

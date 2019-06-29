@@ -83,6 +83,7 @@ var CheckKey = func(next http.Handler) http.Handler {
 		log.Printf("API Key %s\n", apiKey.Key)
 
 		ctx := context.WithValue(r.Context(), "resume", resumeID)
+		ctx = context.WithValue(ctx, "apiKey", apiKey)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)

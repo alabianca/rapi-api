@@ -3,10 +3,6 @@ services:
   mongo:
     image: mongo
     restart: always
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
-    #   db_host: mongo
 
   rapi:
     build: .
@@ -24,3 +20,5 @@ services:
       
     ports: 
       - "8080:8000"
+    volumes:
+      - .:/go/src/github.com/alabianca/rapi-api

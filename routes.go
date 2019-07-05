@@ -41,7 +41,7 @@ func apiRoutes() *chi.Mux {
 func setupCORS() *cors.Cors {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"POST", "GET", "UPDATE", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"POST", "GET", "UPDATE", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-TOKEN"},
 		AllowCredentials: true,
 		MaxAge:           500,
@@ -83,6 +83,8 @@ func keyRoutes() *chi.Mux {
 
 	router.Post("/{resumeID}", controllers.CreateKey)
 	router.Get("/{resumeID}", controllers.GetKeys)
+	router.Patch("/{keyID}", controllers.PatchKey)
+	router.Delete("/{keyID}", controllers.DeleteKey)
 
 	return router
 }

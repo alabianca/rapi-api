@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"log"
 	"net/http"
 	"time"
 
@@ -50,6 +51,52 @@ func (a *APIKey) Create() map[string]interface{} {
 
 	return response
 
+}
+
+func (a *APIKey) UpdateKey() map[string]interface{} {
+	db, err := GetDB()
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")
+	}
+
+	keys := db.Collection(KeyCollection)
+
+	filter := bson.D{{"_id", a.ID}}
+	update := bson.D{
+		{"$set", bson.D{{"scope", a.Scope}}},
+		{"$set", bson.D{{"friendlyname", a.FriendlyName}}},
+	}
+
+	_, err = keys.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Printf("Error Occurerred %s", err.Error())
+		return utils.Message(http.StatusNotModified, err.Error())
+	}
+
+	response := utils.Message(http.StatusOK, "Key Updated successfully")
+	response["data"] = a
+
+	return response
+
+}
+
+func DeleteKey(id primitive.ObjectID) map[string]interface{} {
+	db, err := GetDB()
+	if err != nil {
+		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")
+	}
+
+	keys := db.Collection(KeyCollection)
+
+	filter := bson.D{{"_id", id}}
+	_, err = keys.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return utils.Message(http.StatusNotModified, "Could not delete key "+err.Error())
+	}
+
+	response := utils.Message(http.StatusOK, "Key Deleted")
+	response["data"] = "OK"
+	return response
 }
 
 func GetKeys(userID, resumeID primitive.ObjectID) map[string]interface{} {

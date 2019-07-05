@@ -67,3 +67,32 @@ var GetKeys = func(w http.ResponseWriter, r *http.Request) {
 	utils.Respond(w, response)
 
 }
+
+var PatchKey = func(w http.ResponseWriter, r *http.Request) {
+	var key models.APIKey
+	if err := json.NewDecoder(r.Body).Decode(&key); err != nil {
+		utils.Respond(w, utils.Message(http.StatusBadRequest, "Json Decode Error"))
+		return
+	}
+
+	response := key.UpdateKey()
+
+	utils.Respond(w, response)
+}
+
+var DeleteKey = func(w http.ResponseWriter, r *http.Request) {
+	keyId := chi.URLParam(r, "keyID")
+	if keyId == "" {
+		utils.Respond(w, utils.Message(http.StatusBadRequest, "Key ID is required"))
+		return
+	}
+
+	id, err := primitive.ObjectIDFromHex(keyId)
+	if err != nil {
+		utils.Respond(w, utils.Message(http.StatusBadRequest, err.Error()))
+		return
+	}
+
+	response := models.DeleteKey(id)
+	utils.Respond(w, response)
+}

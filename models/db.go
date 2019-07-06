@@ -17,7 +17,8 @@ func init() {
 	e := godotenv.Load()
 
 	if e != nil {
-		fmt.Print(e)
+		fmt.Print("%s\n", e.Error())
+		return
 	}
 
 	host := os.Getenv("db_host")

@@ -1,15 +1,14 @@
-package pub
+package controllers
 
 import (
 	"fmt"
 	"net/http"
 
-	"github.com/alabianca/rapi-api/models"
 	"github.com/alabianca/rapi-api/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var GetResume = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetResume(w http.ResponseWriter, r *http.Request) {
 
 	resumeID, err := GetResumeIdFromContext(r)
 
@@ -17,7 +16,7 @@ var GetResume = func(w http.ResponseWriter, r *http.Request) {
 		utils.Respond(w, utils.Message(http.StatusBadRequest, "Resume ID is required"))
 	}
 
-	res := models.GetResumeByID(resumeID)
+	res := a.DAL.Resume().GetResumeByID(resumeID)
 
 	utils.Respond(w, res)
 }

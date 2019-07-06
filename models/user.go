@@ -34,8 +34,10 @@ type User struct {
 	Records   []primitive.ObjectID `json:"records" bson:"records,omitempty"`
 }
 
+type UserSource struct{}
+
 // Validate validates if a user by the u.Email already exists
-func Validate(u *User) (map[string]interface{}, bool) {
+func (us UserSource) Validate(u *User) (map[string]interface{}, bool) {
 	if !strings.Contains(u.Email, "@") {
 		return utils.Message(http.StatusBadRequest, "Email address is required"), false
 	}
@@ -63,8 +65,8 @@ func Validate(u *User) (map[string]interface{}, bool) {
 }
 
 // Create inserts a new user if the user with `email` does not yet exist
-func CreateUser(u *User) map[string]interface{} {
-	if resp, ok := Validate(u); !ok {
+func (us UserSource) CreateUser(u *User) map[string]interface{} {
+	if resp, ok := us.Validate(u); !ok {
 		return resp
 	}
 
@@ -95,7 +97,7 @@ func CreateUser(u *User) map[string]interface{} {
 	return response
 }
 
-func Login(email, password string) map[string]interface{} {
+func (us UserSource) Login(email, password string) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -123,7 +125,7 @@ func Login(email, password string) map[string]interface{} {
 	return response
 }
 
-func GetUserById(id primitive.ObjectID) map[string]interface{} {
+func (us UserSource) GetUserById(id primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -147,7 +149,7 @@ func GetUserById(id primitive.ObjectID) map[string]interface{} {
 	return response
 }
 
-func AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]interface{} {
+func (us UserSource) AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -169,10 +171,10 @@ func AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]inte
 		return utils.Message(http.StatusInternalServerError, fmt.Sprintf("Error Updating User %s", err))
 	}
 
-	return GetUserById(userId)
+	return us.GetUserById(userId)
 }
 
-func GetRecords(userId primitive.ObjectID) map[string]interface{} {
+func (us UserSource) GetRecords(userId primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on the database")

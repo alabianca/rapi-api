@@ -34,7 +34,9 @@ type APIKey struct {
 	FriendlyName string             `json:"friendlyName"`
 }
 
-func CreateKey(a *APIKey) map[string]interface{} {
+type APIKeySource struct{}
+
+func (key APIKeySource) CreateKey(a *APIKey) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -60,7 +62,7 @@ func CreateKey(a *APIKey) map[string]interface{} {
 
 }
 
-func UpdateKey(a *APIKey) map[string]interface{} {
+func (key APIKeySource) UpdateKey(a *APIKey) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")
@@ -87,7 +89,7 @@ func UpdateKey(a *APIKey) map[string]interface{} {
 
 }
 
-func DeleteKey(id primitive.ObjectID) map[string]interface{} {
+func (key APIKeySource) DeleteKey(id primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")
@@ -106,7 +108,7 @@ func DeleteKey(id primitive.ObjectID) map[string]interface{} {
 	return response
 }
 
-func GetKeys(userID, resumeID primitive.ObjectID) map[string]interface{} {
+func (key APIKeySource) GetKeys(userID, resumeID primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")

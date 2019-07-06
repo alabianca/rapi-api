@@ -3,14 +3,13 @@ package main
 import (
 	"github.com/alabianca/rapi-api/app"
 	"github.com/alabianca/rapi-api/controllers"
-	"github.com/alabianca/rapi-api/pub"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 )
 
-func apiRoutes() *chi.Mux {
+func apiRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(
@@ -24,15 +23,15 @@ func apiRoutes() *chi.Mux {
 
 	router.Route("/v1", func(r chi.Router) {
 		r.Use(app.JwtAuthentication)
-		r.Mount("/api/user", userRoutes())
-		r.Mount("/api/token", tokenRoutes())
-		r.Mount("/api/resume", resumeRoutes())
-		r.Mount("/api/key", keyRoutes())
-		r.Mount("/api/metrics", metricRoutes())
+		r.Mount("/api/user", userRoutes(api))
+		r.Mount("/api/token", tokenRoutes(api))
+		r.Mount("/api/resume", resumeRoutes(api))
+		r.Mount("/api/key", keyRoutes(api))
+		r.Mount("/api/metrics", metricRoutes(api))
 	})
 
 	router.Route("/pub/v1", func(r chi.Router) {
-		r.Mount("/record", recordRoutes())
+		r.Mount("/record", recordRoutes(api))
 	})
 
 	return router
@@ -50,65 +49,65 @@ func setupCORS() *cors.Cors {
 	return c
 }
 
-func userRoutes() *chi.Mux {
+func userRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/", controllers.CreateUser)
-	router.Post("/{userID}", controllers.PostUser)
-	router.Get("/{userID}", controllers.GetUser)
-	router.Get("/{userID}/records", controllers.GetRecordsForUser)
+	router.Post("/", api.CreateUser)
+	router.Post("/{userID}", api.PostUser)
+	router.Get("/{userID}", api.GetUser)
+	router.Get("/{userID}/records", api.GetRecordsForUser)
 
 	return router
 }
 
-func tokenRoutes() *chi.Mux {
+func tokenRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/", controllers.CreateToken)
+	router.Post("/", api.CreateToken)
 
 	return router
 }
 
-func resumeRoutes() *chi.Mux {
+func resumeRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/", controllers.CreateResume)
-	router.Get("/", controllers.GetResumes)
+	router.Post("/", api.CreateResume)
+	router.Get("/", api.GetResumes)
 
 	return router
 }
 
-func keyRoutes() *chi.Mux {
+func keyRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/{resumeID}", controllers.CreateKey)
-	router.Get("/{resumeID}", controllers.GetKeys)
-	router.Patch("/{keyID}", controllers.PatchKey)
-	router.Delete("/{keyID}", controllers.DeleteKey)
+	router.Post("/{resumeID}", api.CreateKey)
+	router.Get("/{resumeID}", api.GetKeys)
+	router.Patch("/{keyID}", api.PatchKey)
+	router.Delete("/{keyID}", api.DeleteKey)
 
 	return router
 }
 
-func metricRoutes() *chi.Mux {
+func metricRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Get("/", controllers.GetMetrics)
+	router.Get("/", api.GetMetrics)
 
 	return router
 }
 
-func recordRoutes() *chi.Mux {
+func recordRoutes(api *controllers.API) *chi.Mux {
 	router := chi.NewRouter()
 
-	r := router.With(app.CheckKey, app.LogKey)
-	r.Get("/{resumeID}", pub.GetResume)
-	r.Get("/{resumeID}/experience", pub.GetExperience)
-	r.Get("/{resumeID}/education", pub.GetEducation)
-	r.Get("/{resumeID}/personal", pub.GetPersonal)
-	r.Get("/{resumeID}/projects", pub.GetProjects)
-	r.Get("/{resumeID}/skills", pub.GetSkills)
+	r := router.With(app.CheckKey, app.LogKey(api))
+	r.Get("/{resumeID}", api.GetResume)
+	r.Get("/{resumeID}/experience", api.GetExperience)
+	r.Get("/{resumeID}/education", api.GetEducation)
+	r.Get("/{resumeID}/personal", api.GetPersonal)
+	r.Get("/{resumeID}/projects", api.GetProjects)
+	r.Get("/{resumeID}/skills", api.GetSkills)
 
-	r.Post("/{resumeID}", pub.GetResume)
+	r.Post("/{resumeID}", api.GetResume)
 
 	return router
 }

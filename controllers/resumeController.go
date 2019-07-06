@@ -10,7 +10,7 @@ import (
 	"github.com/alabianca/rapi-api/utils"
 )
 
-var CreateResume = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) CreateResume(w http.ResponseWriter, r *http.Request) {
 	resume := &models.Resume{}
 	user := r.Context().Value("user").(string)
 
@@ -27,12 +27,12 @@ var CreateResume = func(w http.ResponseWriter, r *http.Request) {
 
 	resume.UserID = userId
 
-	response := resume.CreateResume()
+	response := a.DAL.Resume().CreateResume(resume)
 
 	utils.Respond(w, response)
 }
 
-var GetResumes = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetResumes(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(string)
 
 	userId, err := primitive.ObjectIDFromHex(user)
@@ -41,7 +41,7 @@ var GetResumes = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := models.GetResumes(userId)
+	res := a.DAL.Resume().GetResumes(userId)
 
 	utils.Respond(w, res)
 

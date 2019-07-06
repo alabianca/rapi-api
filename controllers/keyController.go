@@ -12,7 +12,7 @@ import (
 	"github.com/alabianca/rapi-api/models"
 )
 
-var CreateKey = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) CreateKey(w http.ResponseWriter, r *http.Request) {
 	var key models.APIKey
 
 	if err := json.NewDecoder(r.Body).Decode(&key); err != nil {
@@ -37,12 +37,12 @@ var CreateKey = func(w http.ResponseWriter, r *http.Request) {
 	key.Resume = resumeID
 	key.UserID = id
 
-	res := models.CreateKey(&key)
+	res := a.DAL.Keys().CreateKey(&key)
 
 	utils.Respond(w, res)
 }
 
-var GetKeys = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetKeys(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user").(string)
 	id, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
@@ -62,25 +62,25 @@ var GetKeys = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.GetKeys(id, resume)
+	response := a.DAL.Keys().GetKeys(id, resume)
 
 	utils.Respond(w, response)
 
 }
 
-var PatchKey = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) PatchKey(w http.ResponseWriter, r *http.Request) {
 	var key models.APIKey
 	if err := json.NewDecoder(r.Body).Decode(&key); err != nil {
 		utils.Respond(w, utils.Message(http.StatusBadRequest, "Json Decode Error"))
 		return
 	}
 
-	response := models.UpdateKey(&key)
+	response := a.DAL.Keys().UpdateKey(&key)
 
 	utils.Respond(w, response)
 }
 
-var DeleteKey = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) DeleteKey(w http.ResponseWriter, r *http.Request) {
 	keyId := chi.URLParam(r, "keyID")
 	if keyId == "" {
 		utils.Respond(w, utils.Message(http.StatusBadRequest, "Key ID is required"))
@@ -93,6 +93,6 @@ var DeleteKey = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.DeleteKey(id)
+	response := a.DAL.Keys().DeleteKey(id)
 	utils.Respond(w, response)
 }

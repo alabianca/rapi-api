@@ -22,7 +22,9 @@ type Education struct {
 	Degree    string             `json:"degree"`
 }
 
-func GetEducation(id primitive.ObjectID) map[string]interface{} {
+type EducationSource struct{}
+
+func (e EducationSource) GetEducation(id primitive.ObjectID) map[string]interface{} {
 	resume, err := getResumeById(id)
 
 	if err != nil {

@@ -13,7 +13,7 @@ import (
 	"github.com/alabianca/rapi-api/models"
 )
 
-var CreateUser = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) CreateUser(w http.ResponseWriter, r *http.Request) {
 	reg := &models.Registration{}
 	user := &models.User{}
 
@@ -32,12 +32,12 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 	user.FirstName = reg.FirstName
 	user.LastName = reg.LastName
 
-	resp := user.Create()
+	resp := a.DAL.Users().CreateUser(user)
 
 	utils.Respond(w, resp)
 }
 
-var AuthenticateUser = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
@@ -45,12 +45,12 @@ var AuthenticateUser = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.Login(user.Email, user.Password)
+	resp := a.DAL.Users().Login(user.Email, user.Password)
 
 	utils.Respond(w, resp)
 }
 
-var GetUser = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	id, err := primitive.ObjectIDFromHex(userID)
 
@@ -59,12 +59,12 @@ var GetUser = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.GetUserById(id)
+	resp := a.DAL.Users().GetUserById(id)
 
 	utils.Respond(w, resp)
 }
 
-var PostUser = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) PostUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	id, err := primitive.ObjectIDFromHex(userID)
 
@@ -80,12 +80,12 @@ var PostUser = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.AddRecord(id, record.ID)
+	resp := a.DAL.Users().AddRecord(id, record.ID)
 
 	utils.Respond(w, resp)
 }
 
-var GetRecordsForUser = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetRecordsForUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	id, err := primitive.ObjectIDFromHex(userID)
 
@@ -94,7 +94,7 @@ var GetRecordsForUser = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.GetRecords(id)
+	resp := a.DAL.Users().GetRecords(id)
 
 	utils.Respond(w, resp)
 

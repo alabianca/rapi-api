@@ -22,7 +22,9 @@ type Experience struct {
 	Current         bool               `json:"current"`
 }
 
-func GetExperience(id primitive.ObjectID) map[string]interface{} {
+type ExperienceSource struct{}
+
+func (e ExperienceSource) GetExperience(id primitive.ObjectID) map[string]interface{} {
 	resume, err := getResumeById(id)
 
 	if err != nil {

@@ -35,7 +35,9 @@ type Resume struct {
 	Skills      []string           `json:"skills"`
 }
 
-func CreateResume(r *Resume) map[string]interface{} {
+type ResumeSource struct{}
+
+func (rs ResumeSource) CreateResume(r *Resume) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could Not Connect to DB")
@@ -56,7 +58,7 @@ func CreateResume(r *Resume) map[string]interface{} {
 	return response
 }
 
-func GetResumes(userId primitive.ObjectID) map[string]interface{} {
+func (rs ResumeSource) GetResumes(userId primitive.ObjectID) map[string]interface{} {
 	resumes, err := getResume(userId)
 
 	if err != nil {
@@ -102,7 +104,7 @@ func getResume(userId primitive.ObjectID) ([]*Resume, error) {
 
 }
 
-func GetResumeByID(id primitive.ObjectID) map[string]interface{} {
+func (rs ResumeSource) GetResumeByID(id primitive.ObjectID) map[string]interface{} {
 	res, err := getResumeById(id)
 
 	if err != nil {
@@ -146,7 +148,9 @@ type URLRecord struct {
 	User      primitive.ObjectID `json:"userId" bson:"userId,omitempty"`
 }
 
-func CreateURLRecord(u *URLRecord) map[string]interface{} {
+type URLRecordSource struct{}
+
+func (us URLRecordSource) CreateURLRecord(u *URLRecord) map[string]interface{} {
 	if u.URL == "" {
 		return utils.Message(http.StatusBadRequest, "Illegal URL")
 	}
@@ -175,7 +179,7 @@ func CreateURLRecord(u *URLRecord) map[string]interface{} {
 	return response
 }
 
-func GenerateRandomURL(userId primitive.ObjectID) map[string]interface{} {
+func (us URLRecordSource) GenerateRandomURL(userId primitive.ObjectID) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -191,7 +195,7 @@ func GenerateRandomURL(userId primitive.ObjectID) map[string]interface{} {
 		return utils.Message(http.StatusConflict, "Could Not Generate a URL")
 	}
 
-	return CreateURLRecord(record)
+	return us.CreateURLRecord(record)
 }
 
 func generateAttempt(urlCollection *mongo.Collection, current, max int, record *URLRecord) error {

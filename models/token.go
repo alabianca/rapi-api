@@ -28,7 +28,9 @@ type Token struct {
 	jwt.StandardClaims
 }
 
-func GetToken(email, password string) map[string]interface{} {
+type TokenSource struct{}
+
+func (ts TokenSource) GetToken(email, password string) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {

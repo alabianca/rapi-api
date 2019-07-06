@@ -19,7 +19,9 @@ type Personal struct {
 	Objective string             `json:"objective"`
 }
 
-func GetPersonal(id primitive.ObjectID) map[string]interface{} {
+type PersonalSource struct{}
+
+func (ps PersonalSource) GetPersonal(id primitive.ObjectID) map[string]interface{} {
 	resume, err := getResumeById(id)
 
 	if err != nil {
@@ -33,7 +35,7 @@ func GetPersonal(id primitive.ObjectID) map[string]interface{} {
 
 }
 
-func GetSkills(id primitive.ObjectID) map[string]interface{} {
+func (ps PersonalSource) GetSkills(id primitive.ObjectID) map[string]interface{} {
 	resume, err := getResumeById(id)
 
 	if err != nil {

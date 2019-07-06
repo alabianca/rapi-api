@@ -4,18 +4,16 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/alabianca/rapi-api/models"
-
 	"github.com/alabianca/rapi-api/utils"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var GetMetrics = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) GetMetrics(w http.ResponseWriter, r *http.Request) {
 	keyArgs := r.URL.Query().Get("keys")
 	ids := objectIdsFromStrings(keyArgs)
 
-	response := models.GetLogsForKeys(ids)
+	response := a.DAL.Logs().GetLogsForKeys(ids)
 
 	utils.Respond(w, response)
 }

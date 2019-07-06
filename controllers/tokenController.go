@@ -8,7 +8,7 @@ import (
 	"github.com/alabianca/rapi-api/utils"
 )
 
-var CreateToken = func(w http.ResponseWriter, r *http.Request) {
+func (a *API) CreateToken(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
@@ -16,7 +16,7 @@ var CreateToken = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.GetToken(user.Email, user.Password)
+	resp := a.DAL.Tokens().GetToken(user.Email, user.Password)
 
 	utils.Respond(w, resp)
 }

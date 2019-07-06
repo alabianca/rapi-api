@@ -17,7 +17,7 @@ import (
 const APILogsCollection = "apiLogs"
 
 type LogDAL interface {
-	CeateLog(l *Log) map[string]interface{}
+	CreateLog(l *Log) map[string]interface{}
 	GetLogsFor(apiKeyID primitive.ObjectID) map[string]interface{}
 	GetLogsForKeys(apiIds []primitive.ObjectID) map[string]interface{}
 }
@@ -28,7 +28,9 @@ type Log struct {
 	Date  time.Time          `json:"date"`
 }
 
-func CreateLog(l *Log) map[string]interface{} {
+type LogSource struct{}
+
+func (ls LogSource) CreateLog(l *Log) map[string]interface{} {
 	logs, err := getLogsCollection()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, err.Error())
@@ -47,7 +49,7 @@ func CreateLog(l *Log) map[string]interface{} {
 	return response
 }
 
-func GetLogsFor(apiKeyID primitive.ObjectID) map[string]interface{} {
+func (ls LogSource) GetLogsFor(apiKeyID primitive.ObjectID) map[string]interface{} {
 	logs, err := getLogsCollection()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, err.Error())
@@ -66,7 +68,7 @@ func GetLogsFor(apiKeyID primitive.ObjectID) map[string]interface{} {
 	return response
 }
 
-func GetLogsForKeys(apiIds []primitive.ObjectID) map[string]interface{} {
+func (ls LogSource) GetLogsForKeys(apiIds []primitive.ObjectID) map[string]interface{} {
 	logs, err := getLogsCollection()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, err.Error())

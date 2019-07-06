@@ -5,10 +5,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/alabianca/rapi-api/controllers"
 )
 
 func main() {
-	router := apiRoutes()
+	api := controllers.API{
+		DAL: controllers.DefaultDAL{},
+	}
+	router := apiRoutes(&api)
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 

@@ -7,6 +7,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type PersonalDAL interface {
+	GetPersonal(id primitive.ObjectID) map[string]interface{}
+	GetSkills(id primitive.ObjectID) map[string]interface{}
+}
+
 type Personal struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	FirstName string             `json:"firstName"`

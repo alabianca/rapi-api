@@ -8,6 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ExperienceDAL interface {
+	GetExperience(id primitive.ObjectID) map[string]interface{}
+}
+
 type Experience struct {
 	ID              primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Company         string             `json:"company"`

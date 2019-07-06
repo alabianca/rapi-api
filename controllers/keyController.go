@@ -37,7 +37,7 @@ var CreateKey = func(w http.ResponseWriter, r *http.Request) {
 	key.Resume = resumeID
 	key.UserID = id
 
-	res := key.Create()
+	res := models.CreateKey(&key)
 
 	utils.Respond(w, res)
 }
@@ -75,7 +75,7 @@ var PatchKey = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := key.UpdateKey()
+	response := models.UpdateKey(&key)
 
 	utils.Respond(w, response)
 }

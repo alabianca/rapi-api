@@ -9,6 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type EducationDAL interface {
+	GetEducation(id primitive.ObjectID) map[string]interface{}
+}
+
 type Education struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	School    string             `json:"school"`

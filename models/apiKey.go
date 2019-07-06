@@ -17,6 +17,13 @@ import (
 
 const KeyCollection = "keys"
 
+type APIKeyDAL interface {
+	CreateKey(a *APIKey) map[string]interface{}
+	UpdateKey(a *APIKey) map[string]interface{}
+	DeleteKey(id primitive.ObjectID) map[string]interface{}
+	GetKeys(userID, resumeID primitive.ObjectID) map[string]interface{}
+}
+
 type APIKey struct {
 	ID           primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	UserID       primitive.ObjectID `json:"userId,omitempty"`
@@ -27,7 +34,7 @@ type APIKey struct {
 	FriendlyName string             `json:"friendlyName"`
 }
 
-func (a *APIKey) Create() map[string]interface{} {
+func CreateKey(a *APIKey) map[string]interface{} {
 	db, err := GetDB()
 
 	if err != nil {
@@ -53,7 +60,7 @@ func (a *APIKey) Create() map[string]interface{} {
 
 }
 
-func (a *APIKey) UpdateKey() map[string]interface{} {
+func UpdateKey(a *APIKey) map[string]interface{} {
 	db, err := GetDB()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, "Could not get a handle on db")

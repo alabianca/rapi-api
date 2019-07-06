@@ -16,13 +16,19 @@ import (
 
 const APILogsCollection = "apiLogs"
 
+type LogDAL interface {
+	CeateLog(l *Log) map[string]interface{}
+	GetLogsFor(apiKeyID primitive.ObjectID) map[string]interface{}
+	GetLogsForKeys(apiIds []primitive.ObjectID) map[string]interface{}
+}
+
 type Log struct {
 	ID    primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	APIID primitive.ObjectID `json:"apiId"`
 	Date  time.Time          `json:"date"`
 }
 
-func (l *Log) Create() map[string]interface{} {
+func CreateLog(l *Log) map[string]interface{} {
 	logs, err := getLogsCollection()
 	if err != nil {
 		return utils.Message(http.StatusInternalServerError, err.Error())

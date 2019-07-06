@@ -7,6 +7,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ProjectDAL interface {
+	GetProjects(id primitive.ObjectID) map[string]interface{}
+}
+
 type Project struct {
 	ID     primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Title  string             `json:"string"`

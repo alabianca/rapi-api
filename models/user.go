@@ -17,6 +17,14 @@ import (
 
 const UserCollection = "users"
 
+type UserDAL interface {
+	CreateUser(u *User) map[string]interface{}
+	Login(email, password string) map[string]interface{}
+	GetUserById(id primitive.ObjectID) map[string]interface{}
+	AddRecord(userId primitive.ObjectID, id primitive.ObjectID) map[string]interface{}
+	GetRecords(userId primitive.ObjectID) map[string]interface{}
+}
+
 type User struct {
 	FirstName string               `json:"firstName"`
 	LastName  string               `json:"lastName"`
@@ -27,7 +35,7 @@ type User struct {
 }
 
 // Validate validates if a user by the u.Email already exists
-func (u *User) Validate() (map[string]interface{}, bool) {
+func Validate(u *User) (map[string]interface{}, bool) {
 	if !strings.Contains(u.Email, "@") {
 		return utils.Message(http.StatusBadRequest, "Email address is required"), false
 	}
@@ -55,8 +63,8 @@ func (u *User) Validate() (map[string]interface{}, bool) {
 }
 
 // Create inserts a new user if the user with `email` does not yet exist
-func (u *User) Create() map[string]interface{} {
-	if resp, ok := u.Validate(); !ok {
+func CreateUser(u *User) map[string]interface{} {
+	if resp, ok := Validate(u); !ok {
 		return resp
 	}
 

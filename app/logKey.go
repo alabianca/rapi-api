@@ -17,9 +17,10 @@ var LogKey = func(next http.Handler) http.Handler {
 			Date:  time.Now().UTC(),
 		}
 
-		res := logEvent.Create()
+		res := models.CreateLog(logEvent)
 		log.Printf("Logged API Request to public endpoint %v", res)
 
 		next.ServeHTTP(w, r)
 	})
+
 }

@@ -17,6 +17,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+type TokenDAL interface {
+	GetToken(email, password string) map[string]interface{}
+}
+
 type Token struct {
 	UserID      string `json:"userId"`
 	TokenString string `json:"token"`

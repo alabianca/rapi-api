@@ -17,7 +17,7 @@ func init() {
 	e := godotenv.Load()
 
 	if e != nil {
-		fmt.Print("%s\n", e.Error())
+		fmt.Printf("%s\n", e.Error())
 		return
 	}
 

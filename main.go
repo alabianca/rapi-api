@@ -6,10 +6,13 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/alabianca/rapi-api/models"
+
 	"github.com/alabianca/rapi-api/controllers"
 )
 
 func main() {
+	models.InitDB()
 	api := controllers.API{
 		DAL: controllers.DefaultDAL{},
 	}

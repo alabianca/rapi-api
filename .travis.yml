@@ -8,3 +8,9 @@ before_install:
 
 script:
   - docker run alabianca/rapi-api-test:latest go test ./...
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "$HEROKU_TOKEN"
+  app: "$HEROKU_APP_NAME"

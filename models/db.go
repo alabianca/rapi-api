@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,23 +14,26 @@ import (
 
 var db *mongo.Client
 
-func init() {
+func InitDB() {
 	e := godotenv.Load()
 
 	if e != nil {
 		fmt.Printf("%s\n", e.Error())
-		return
 	}
 
 	host := os.Getenv("db_host")
 	port := os.Getenv("db_port")
+	user := os.Getenv("db_user")
+	password := os.Getenv("db_pass")
+	dbName := os.Getenv("db_name")
 
 	log.Printf("DB Host @ <%s>\n", host)
 	log.Printf("DB Port @ <%s>\n", port)
 
-	dbURI := fmt.Sprintf("mongodb://%s:%s", host, port)
+	dbURI := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, password, host, port, dbName)
 
 	clientOptions := options.Client().ApplyURI(dbURI)
+	clientOptions.SetConnectTimeout(time.Duration(5 * time.Second))
 
 	// connect to mongodb
 	var err error
@@ -45,8 +49,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Printf("Connected to MongoDB @ %s\n", dbURI)
 }
 
 func GetDB() (*mongo.Database, error) {

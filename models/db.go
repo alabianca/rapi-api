@@ -31,7 +31,7 @@ func InitDB() {
 	log.Printf("DB Port @ <%s>\n", port)
 
 	dbURI := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, password, host, port, dbName)
-
+	log.Printf("Connecting to %s\n", dbURI)
 	clientOptions := options.Client().ApplyURI(dbURI)
 	clientOptions.SetConnectTimeout(time.Duration(5 * time.Second))
 

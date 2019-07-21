@@ -6,8 +6,8 @@ services:
 before_install:
   - docker build -t alabianca/rapi-api-test:latest .
 
-script:
-  - docker run alabianca/rapi-api-test:latest go test ./...
+# script:
+#   - docker run alabianca/rapi-api-test:latest go test ./...
 
 deploy:
   provider: heroku

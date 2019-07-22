@@ -26,11 +26,17 @@ func InitDB() {
 	user := os.Getenv("db_user")
 	password := os.Getenv("db_pass")
 	dbName := os.Getenv("db_name")
+	mongoURI := os.Getenv("MONGODB_URI") // will be set by heroku
 
 	log.Printf("DB Host @ <%s>\n", host)
 	log.Printf("DB Port @ <%s>\n", port)
+	var dbURI string
+	if mongoURI != "" {
+		dbURI = mongoURI
+	} else {
+		dbURI = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, password, host, port, dbName)
+	}
 
-	dbURI := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, password, host, port, dbName)
 	log.Printf("Connecting to %s\n", dbURI)
 	clientOptions := options.Client().ApplyURI(dbURI)
 	clientOptions.SetConnectTimeout(time.Duration(5 * time.Second))

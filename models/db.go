@@ -56,6 +56,7 @@ func InitDB() {
 	}
 }
 
+// GetDB returns the db specified by the db_name env variable
 func GetDB() (*mongo.Database, error) {
 	if db == nil {
 		return nil, fmt.Errorf("Not Connected to Database")

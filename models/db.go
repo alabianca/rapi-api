@@ -26,7 +26,7 @@ func InitDB() {
 	user := os.Getenv("db_user")
 	password := os.Getenv("db_pass")
 	dbName := os.Getenv("db_name")
-	mongoURI := os.Getenv("MONGODB_URI") // will be set by heroku
+	mongoURI := os.Getenv("MONGODB_PROD") // will be set by heroku
 
 	log.Printf("DB Host @ <%s>\n", host)
 	log.Printf("DB Port @ <%s>\n", port)

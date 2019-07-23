@@ -58,7 +58,7 @@ func (us UserSource) Validate(u *User) (map[string]interface{}, bool) {
 
 	if err := users.FindOne(context.TODO(), filter).Decode(u); err != mongo.ErrNoDocuments {
 
-		return utils.Message(http.StatusConflict, "Email already exists"), false
+		return utils.Message(http.StatusConflict, err.Error()), false
 	}
 
 	return utils.Message(http.StatusOK, "Requirement Passed"), true

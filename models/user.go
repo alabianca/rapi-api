@@ -85,6 +85,7 @@ func (us UserSource) CreateUser(u *User) map[string]interface{} {
 	insertResult, err := users.InsertOne(context.TODO(), u)
 
 	if err != nil {
+		log.Printf("CREATE USER ERROR: %s\n", err.Error())
 		return utils.Message(http.StatusNotModified, "Error Inserting user document.\n"+err.Error())
 	}
 

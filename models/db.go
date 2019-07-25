@@ -38,7 +38,7 @@ func InitDB() {
 	}
 
 	clientOptions := options.Client().ApplyURI(dbURI)
-	clientOptions.SetReplicaSet("Rapi0-shard-0")
+	clientOptions.SetHosts([]string{"rapi0-shard-00-02-yqd60.mongodb.net", "rapi0-shard-00-01-yqd60.mongodb.net", "rapi0-shard-00-00-yqd60.mongodb.net"})
 	clientOptions.SetConnectTimeout(time.Duration(5 * time.Second))
 
 	// connect to mongodb

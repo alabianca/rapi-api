@@ -34,6 +34,7 @@ type User struct {
 	Records   []primitive.ObjectID `json:"records" bson:"records,omitempty"`
 }
 
+// UserSource implements the UserDAL interface
 type UserSource struct{}
 
 // Validate validates if a user by the u.Email already exists

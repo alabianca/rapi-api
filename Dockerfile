@@ -16,6 +16,7 @@ COPY . .
 RUN go build -o bin/rapid
 
 FROM alpine
+RUN apk add ca-certificates
 WORKDIR /app
 
 COPY --from=builder /go/src/github.com/alabianca/rapi-api/bin/rapid /app/

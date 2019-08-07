@@ -1,4 +1,4 @@
-FROM golang:1.11.11-alpine3.10 as builder
+FROM golang:1.12.7-alpine3.10 as builder
 
 RUN apk add --no-cache git mercurial
 # add gcc and g++ ro run tests
